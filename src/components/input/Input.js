@@ -6,7 +6,7 @@ export const Input = ({ label, ...props }) => {
   const [field, meta] = useField(props);
   return (
     <div className="inputDiv">
-        <label className="label" htmlFor={field.name}>{label}</label>
+        <label className="label" htmlFor={field.name}>{field.name}</label>
         <input
             className={`input ${meta.touched && meta.error && 'is-invalid'}`}
             {...field} {...props}

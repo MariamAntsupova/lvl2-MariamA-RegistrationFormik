@@ -1,9 +1,13 @@
 import React from 'react';
-import { Formik, Form } from 'formik';
+import { Formik, Form ,  useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Input } from '../input/Input';
 import './Registration.scss'
+import HomePage from '../homePage/HomePage';
+import Loader from '../loader/Loader';
+
 function RegistrationFormik ()  {
+  const { status , setStatus , resetForm , isSubmitting , setSubmitting} = useFormik({});
   const validate = Yup.object({
     firstName: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
     lastName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
@@ -22,22 +26,47 @@ function RegistrationFormik ()  {
         confirmPassword: ''
       }}
       validationSchema={validate}
-      onSubmit={values => {
-        console.log(values)
-      }}
+      onSubmit={values => 
+        {
+        fetch('https://reqres.in/api/posts', {
+          method: "POST",
+          body: JSON.stringify(
+            {
+              firstName: values.firstName,
+              lastName: values.lastName,
+              email: values.email,
+              password: values.password,
+              confirmPassword: values.confirmPassword,
+            }
+          )
+        })
+          .then(res => res.json())
+          .then(json => {
+            console.log(json);
+            resetForm();
+            setStatus(true);
+          }).catch((error) => {
+            console.log(error)
+          })
+        }
+      }
     >
       {formik => (
         <div className='mainDiv'>
-          <h1 className="register">Register</h1>
-          <Form>
-            <Input label="First Name" name="firstName" type="text" />
-            <Input label="last Name" name="lastName" type="text" />
-            <Input label="Email" name="email" type="email" />
-            <Input label="password" name="password" type="password" />
-            <Input label="Confirm Password" name="confirmPassword" type="password" />
-            <button className="button registerButton" type="submit">Register</button>
-            <button className="button reset" type="reset">Reset</button>
-          </Form>
+          {status ? (<Loader isLoading={isSubmitting}><HomePage/></Loader>) : (
+            <div>
+              <h1 className="register">Register</h1>
+                <Form>
+                  <Input label="First Name" name="firstName" type="text" />
+                  <Input label="last Name" name="lastName" type="text" />
+                  <Input label="Email" name="email" type="email" />
+                  <Input label="password" name="password" type="password" />
+                  <Input label="Confirm Password" name="confirmPassword" type="password"/>
+                  <button className="button registerButton" type="submit">Register</button>
+                  <button className="button reset" type="reset">Reset</button>
+                </Form>
+            </div>
+          )}
         </div>
       )}
     </Formik>
