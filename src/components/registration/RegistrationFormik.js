@@ -7,7 +7,7 @@ import HomePage from '../homePage/HomePage';
 import Loader from '../loader/Loader';
 
 function RegistrationFormik ()  {
-  const { status , setStatus , resetForm , isSubmitting , setSubmitting} = useFormik({});
+  const { status , setStatus , resetForm , isSubmitting , setErrors} = useFormik({});
   const validate = Yup.object({
     firstName: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
     lastName: Yup.string().max(20, 'Must be 20 characters or less').required('Required'),
@@ -47,6 +47,7 @@ function RegistrationFormik ()  {
             setStatus(true);
           }).catch((error) => {
             console.log(error)
+            setErrors({main: 'errooorr'})
           })
         }
       }
