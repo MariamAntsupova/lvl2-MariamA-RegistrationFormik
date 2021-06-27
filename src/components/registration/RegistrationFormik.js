@@ -28,7 +28,7 @@ function RegistrationFormik ()  {
       validationSchema={validate}
       onSubmit={values => 
         {
-        fetch('https://reqres.in/api/posts', {
+        fetch('https://reqres.in/api/users', {
           method: "POST",
           body: JSON.stringify(
             {
